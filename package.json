@@ -1,0 +1,22 @@
+{
+  "name": "rtmp-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.6.1",
+    "body-parser": "^1.18.3",
+    "config": "^2.0.1",
+    "express": "^4.16.3",
+    "moment-timezone": "^0.5.21",
+    "mongoose": "^5.2.7",
+    "node-media-server": "^1.4.3",
+    "rtmp-server": "^0.2.0",
+    "socket.io": "^2.1.1"
+  }
+}
