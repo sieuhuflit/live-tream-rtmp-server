@@ -46,8 +46,8 @@ app.set('socketio', io);
 app.set('server', server);
 app.use(express.static(`${__dirname}/public`));
 
-// server.listen(config.get('API.PORT'), err => {
-server.listen(config.get('API.PORT'), '103.221.221.111', err => {
+server.listen(config.get('API.PORT'), err => {
+  // server.listen(config.get('API.PORT'), '103.221.221.111', err => {
   if (err) {
     console.log(err);
   } else {
@@ -86,6 +86,7 @@ var nms = new NodeMediaServer(nodeMediaServerConfig);
 nms.run();
 
 nms.on('getFilePath', (streamPath, oupath, mp4Filename) => {
+  console.log('---------------- get file path ---------------');
   console.log(streamPath);
   console.log(oupath);
   console.log(mp4Filename);

@@ -178,13 +178,14 @@ module.exports = io => {
     });
 
     socket.on('send-heart', data => {
-      console.log('join-server');
+      console.log('send-heart');
       const { roomName } = data;
       roomList[roomName].countHeart += 1;
       socket.broadcast.to(roomName).emit('send-heart');
     });
 
     socket.on('send-message', data => {
+      console.log('send-message');
       const { roomName, userId, message } = data;
       roomList[roomName].messages.push({
         userId,
