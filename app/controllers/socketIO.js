@@ -4,6 +4,7 @@ const moment = require('moment-timezone');
 const { exec } = require('child_process');
 const Room = mongoose.model('Room');
 const Utils = require('../utils');
+const LiveStatus = require('../liveStatus');
 const roomList = {};
 
 module.exports = io => {
@@ -75,7 +76,7 @@ module.exports = io => {
         socket.leave(socket.roomName);
       }
       console.log(JSON.stringify(roomList));
-      if (liveStatus === 0) {
+      if (liveStatus === LiveStatus.REGISTER) {
         Room.findOneAndRemove({ roomName, userId }).exec((error, result) => {
           console.log(error);
         });
@@ -108,7 +109,8 @@ module.exports = io => {
 
     socket.on('register-live-stream', data => {
       console.log('register-live-stream');
-      const { roomName, userId, liveStatus } = data;
+      const liveStatus = LiveStatus.REGISTER;
+      const { roomName, userId } = data;
       createNewRoom(roomName);
       roomList[roomName].participant.push({
         socketId: socket.id,
@@ -118,6 +120,9 @@ module.exports = io => {
       socket.roomName = roomName;
       socket.userId = userId;
       socket.liveStatus = liveStatus;
+      socket.broadcast
+        .to(roomName)
+        .emit('changed-live-status', { roomName, userId, liveStatus });
       return Room.findOne({ roomName, userId }).exec((error, foundRoom) => {
         if (foundRoom) {
           return;
@@ -132,17 +137,22 @@ module.exports = io => {
     });
 
     socket.on('begin-live-stream', data => {
-      const { roomName, userId, liveStatus } = data;
+      const liveStatus = LiveStatus.ON_LIVE;
+      const { roomName, userId } = data;
       socket.liveStatus = liveStatus;
       Room.findOneAndUpdate(
         { roomName, userId },
         { liveStatus },
         { new: true }
       ).exec((error, result) => console.log(error));
+      socket.broadcast
+        .to(roomName)
+        .emit('changed-live-status', { roomName, userId, liveStatus });
     });
 
     socket.on('finish-live-stream', data => {
-      const { roomName, userId, liveStatus } = data;
+      const liveStatus = LiveStatus.FINISH;
+      const { roomName, userId } = data;
       const filePath = Utils.getMp4FilePath();
       const messages = roomList[roomName].messages;
       const countViewer = roomList[roomName].countViewer;
@@ -154,10 +164,17 @@ module.exports = io => {
         { liveStatus, filePath, countViewer, countHeart, messages },
         { new: true }
       ).exec((error, result) => console.log(error));
+      socket.broadcast
+        .to(roomName)
+        .emit('changed-live-status', { roomName, userId, liveStatus });
     });
 
-    socket.on('cancel-live-stream', registerData => {
-      const { roomName, userId, liveStatus } = data;
+    socket.on('cancel-live-stream', data => {
+      const liveStatus = LiveStatus.CANCEL;
+      const { roomName, userId } = data;
+      socket.broadcast
+        .to(roomName)
+        .emit('changed-live-status', { roomName, userId, liveStatus });
     });
 
     socket.on('send-heart', data => {
