@@ -46,7 +46,8 @@ app.set('socketio', io);
 app.set('server', server);
 app.use(express.static(`${__dirname}/public`));
 
-server.listen(config.get('API.PORT'), err => {
+// server.listen(config.get('API.PORT'), err => {
+server.listen(config.get('API.PORT'), '103.221.221.111', err => {
   if (err) {
     console.log(err);
   } else {
