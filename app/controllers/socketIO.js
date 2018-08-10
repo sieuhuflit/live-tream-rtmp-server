@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const config = require('config');
 const moment = require('moment-timezone');
+const { exec } = require('child_process');
 const Room = mongoose.model('Room');
 const Utils = require('../utils');
 const roomList = {};
@@ -194,6 +195,32 @@ module.exports = io => {
       //     message
       //   });
       // });
+    });
+
+    socket.on('replay', (data, callback) => {
+      console.log('replay');
+      const { roomName, userId } = data;
+      console.log(data);
+
+      Room.findOne({ roomName }).exec((error, result) => {
+        callback(result);
+        if (result !== null && result !== undefined) {
+          const commandExec = `ffmpeg -re -i ${
+            result.filePath
+          } -c:v libx264 -preset superfast -maxrate 3000k -bufsize 6000k -pix_fmt yuv420p -g 50 -c:a aac -b:a 160k -ac 2 -ar 44100 -f flv rtmp://localhost/live/${
+            result.roomName
+          }/replayfor${userId}`;
+          exec(commandExec, (err, stdout, stderr) => {
+            if (err) {
+              // node couldn't execute the command
+              return;
+            }
+            // the *entire* stdout and stderr (buffered)
+            console.log(`stdout: ${stdout}`);
+            console.log(`stderr: ${stderr}`);
+          });
+        }
+      });
     });
   });
 };
