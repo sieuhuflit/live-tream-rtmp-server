@@ -8,12 +8,6 @@ const LiveStatus = require('../liveStatus');
 const roomList = {};
 
 module.exports = io => {
-  function getCurrentDateTime() {
-    const a = moment().tz('Asia/Ho_Chi_Minh');
-    const currentDateTime = a.format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
-    return currentDateTime;
-  }
-
   function socketIdsInRoom(roomName) {
     var socketIds = io.nsps['/'].adapter.rooms[roomName].sockets;
     if (socketIds) {
@@ -131,7 +125,7 @@ module.exports = io => {
         condition.roomName = roomName;
         condition.userId = userId;
         condition.liveStatus = liveStatus;
-        condition.createdAt = getCurrentDateTime();
+        condition.createdAt = Utils.getCurrentDateTime();
         Room.create(condition);
       });
     });
@@ -142,7 +136,7 @@ module.exports = io => {
       socket.liveStatus = liveStatus;
       Room.findOneAndUpdate(
         { roomName, userId },
-        { liveStatus },
+        { liveStatus, createdAt: Utils.getCurrentDateTime() },
         { new: true }
       ).exec((error, result) => console.log(error));
       socket.broadcast

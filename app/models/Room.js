@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const Utils = require('../utils');
+
 const Schema = mongoose.Schema;
 
 const RoomSchema = new Schema({
@@ -30,7 +32,7 @@ const RoomSchema = new Schema({
   },
   createdAt: {
     type: Date,
-    default: Date.now()
+    default: Utils.getCurrentDateTime()
   }
 });
 
