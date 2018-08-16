@@ -2,7 +2,7 @@
 
 Live stream using RTMP for React Native App Live Stream
 
-![Streamer user - IOS Real Device](https://media.giphy.com/media/ccVyRxCZQHpNLMXWM3/giphy.gif) ![Viewer user - IOS Simulator](https://media.giphy.com/media/2xDzufTCpkL6OzoJ0a/giphy.gif)
+![Streamer user - IOS Real Device](https://media.giphy.com/media/2xDzufTCpkL6OzoJ0a/giphy.gif) ![Viewer user - IOS Simulator](https://media.giphy.com/media/2xDzufTCpkL6OzoJ0a/giphy.gif)
 
 ## Teachnology using
 
