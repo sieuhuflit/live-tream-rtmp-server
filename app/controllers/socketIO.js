@@ -180,13 +180,29 @@ module.exports = io => {
 
     socket.on('send-message', data => {
       console.log('send-message');
-      const { roomName, userId, message } = data;
+      const {
+        roomName,
+        userId,
+        message,
+        productId,
+        productUrl,
+        productImageUrl
+      } = data;
       roomList[roomName].messages.push({
         userId,
         message,
-        createdAt: getCurrentDateTime()
+        productId,
+        productUrl,
+        productImageUrl,
+        createdAt: Utils.getCurrentDateTime()
       });
-      socket.broadcast.to(roomName).emit('send-message', { userId, message });
+      socket.broadcast.to(roomName).emit('send-message', {
+        userId,
+        message,
+        productId,
+        productUrl,
+        productImageUrl
+      });
 
       // const roomName = data.roomName;
       // const userId = data.userId;
