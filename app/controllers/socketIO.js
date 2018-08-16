@@ -22,16 +22,16 @@ module.exports = io => {
   }
 
   function createNewRoom(roomName, error) {
-    if (roomList.hasOwnProperty(roomName)) {
-      if (error) error('Room already used.');
-    } else {
-      roomList[roomName] = {
-        participant: [],
-        countHeart: 0,
-        countViewer: 1,
-        messages: []
-      };
-    }
+    // if (roomList.hasOwnProperty(roomName)) {
+    //   if (error) error('Room already used.');
+    // } else {
+    roomList[roomName] = {
+      participant: [],
+      countHeart: 0,
+      countViewer: 1,
+      messages: []
+    };
+    // }
   }
 
   function findParticipant(socketId) {
@@ -203,26 +203,6 @@ module.exports = io => {
         productUrl,
         productImageUrl
       });
-
-      // const roomName = data.roomName;
-      // const userId = data.userId;
-      // const message = data.message;
-      // var socketIds = socketIdsInRoom(roomName);
-      // let friends = socketIds
-      //   .map(socketId => {
-      //     let room = findParticipant(socketId);
-      //     return {
-      //       socketId: socketId,
-      //       userId: room === null ? null : room.userId
-      //     };
-      //   })
-      //   .filter(friend => friend.socketId != socket.id);
-      // friends.forEach(friend => {
-      //   io.sockets.connected[friend.socketId].emit('send-message', {
-      //     userId,
-      //     message
-      //   });
-      // });
     });
 
     socket.on('replay', (data, callback) => {
