@@ -20,6 +20,12 @@ Using node-media-server. Client using Node media client
 npm install
 ```
 
+You must install ffmpeg to using 
+
+```js
+brew install ffmpeg
+```
+
 ## Config port and Database
 
 - Edit in config/sit.json file
@@ -32,6 +38,12 @@ npm install
   },
   "DB_STRING": "mongodb://127.0.0.1:27017/livestream?authSource=admin"
 }
+```
+
+```
+mongo
+use admin
+db.createUser({user:"admin",pwd:"123456",roles:[{role:"userAdminAnyDatabase",db:"admin"}]})
 ```
 
 ## Edit MongoDB Authentication
@@ -60,6 +72,13 @@ pm2 start pm2.config.js --env sit
 
 Add these line to node_modules/node_media_server/node_trans_session.js
 
+Import this on top 
+```js
+const context = require('./node_core_ctx');
+```
+
+Then add
+
 ```js
 context.nodeEvent.emit(
   'getFilePath',
@@ -69,15 +88,15 @@ context.nodeEvent.emit(
 );
 ```
 
-Under
+Under this line
 
 ```js
 Logger.log(
-  '[Transmuxing MP4] ' +
+  "[Transmuxing MP4] " +
     this.conf.streamPath +
-    ' to ' +
+    " to " +
     ouPath +
-    '/' +
+    "/" +
     mp4FileName
 );
 ```

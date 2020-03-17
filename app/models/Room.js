@@ -1,7 +1,5 @@
 const mongoose = require('mongoose');
-
 const Utils = require('../utils');
-
 const Schema = mongoose.Schema;
 
 const RoomSchema = new Schema({

@@ -19,13 +19,13 @@ fs.readdirSync(shopmodelsPath).forEach(file => {
 
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
-const socketIOController = require('./app/controllers/socketIO')(io);
+require('./app/controllers/socketIO')(io);
 
 mongoose.Promise = global.Promise;
 global.appRoot = path.resolve(__dirname);
 
 mongoose.connect(
-  config.get('DB_STRING'),
+  "mongodb://127.0.0.1:27017/livestream?authSource=admin",
   { useNewUrlParser: true, user: 'admin', pass: '123456' },
   err => {
     if (err) {
@@ -46,8 +46,7 @@ app.set('socketio', io);
 app.set('server', server);
 app.use(express.static(`${__dirname}/public`));
 
-server.listen(config.get('API.PORT'), err => {
-  // server.listen(config.get('API.PORT'), '103.221.221.111', err => {
+server.listen(3333, err => {
   if (err) {
     console.log(err);
   } else {
@@ -56,7 +55,6 @@ server.listen(config.get('API.PORT'), err => {
 });
 
 const nodeMediaServerConfig = {
-  // logType: 3,
   rtmp: {
     port: 1935,
     chunk_size: 60000,
@@ -98,8 +96,6 @@ nms.on('preConnect', (id, args) => {
     '[NodeEvent on preConnect]',
     `id=${id} args=${JSON.stringify(args)}`
   );
-  // let session = nms.getSession(id);
-  // session.reject();
 });
 
 nms.on('postConnect', (id, args) => {
@@ -121,8 +117,6 @@ nms.on('prePublish', (id, StreamPath, args) => {
     '[NodeEvent on prePublish]',
     `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
   );
-  // let session = nms.getSession(id);
-  // session.reject();
 });
 
 nms.on('postPublish', (id, StreamPath, args) => {
@@ -144,8 +138,6 @@ nms.on('prePlay', (id, StreamPath, args) => {
     '[NodeEvent on prePlay]',
     `id=${id} StreamPath=${StreamPath} args=${JSON.stringify(args)}`
   );
-  // let session = nms.getSession(id);
-  // session.reject();
 });
 
 nms.on('postPlay', (id, StreamPath, args) => {

@@ -220,6 +220,8 @@ module.exports = io => {
           }/replayfor${userId}`;
           exec(commandExec, (err, stdout, stderr) => {
             if (err) {
+              console.log('...... FUCK');
+              console.log(err)
               // node couldn't execute the command
               return;
             }
