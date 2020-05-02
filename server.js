@@ -11,13 +11,14 @@ const config = require('config');
 const utils = require('./app/utils');
 
 const shopmodelsPath = `${__dirname}/app/models/`;
-fs.readdirSync(shopmodelsPath).forEach(file => {
+fs.readdirSync(shopmodelsPath).forEach((file) => {
   if (~file.indexOf('.js')) {
     require(`${shopmodelsPath}/${file}`);
   }
 });
 
 const server = http.createServer(app);
+/* eslint-disable-next-line */
 const io = require('socket.io').listen(server);
 require('./app/controllers/socketIO')(io);
 
@@ -25,9 +26,9 @@ mongoose.Promise = global.Promise;
 global.appRoot = path.resolve(__dirname);
 
 mongoose.connect(
-  "mongodb://127.0.0.1:27017/livestream?authSource=admin",
+  'mongodb://127.0.0.1:27017/livestream?authSource=admin',
   { useNewUrlParser: true, user: 'admin', pass: '123456' },
-  err => {
+  (err) => {
     if (err) {
       console.log(err);
     } else {
@@ -38,7 +39,7 @@ mongoose.connect(
 
 app.use(
   bodyParser.urlencoded({
-    extended: true
+    extended: true,
   })
 );
 app.use(bodyParser.json());
@@ -46,7 +47,7 @@ app.set('socketio', io);
 app.set('server', server);
 app.use(express.static(`${__dirname}/public`));
 
-server.listen(3333, err => {
+server.listen(3333, (err) => {
   if (err) {
     console.log(err);
   } else {
@@ -60,12 +61,12 @@ const nodeMediaServerConfig = {
     chunk_size: 60000,
     gop_cache: true,
     ping: 60,
-    ping_timeout: 30
+    ping_timeout: 30,
   },
   http: {
     port: 8000,
     mediaroot: './media',
-    allow_origin: '*'
+    allow_origin: '*',
   },
   trans: {
     ffmpeg: '/usr/local/bin/ffmpeg',
@@ -74,13 +75,13 @@ const nodeMediaServerConfig = {
         app: 'live',
         ac: 'aac',
         mp4: true,
-        mp4Flags: '[movflags=faststart]'
-      }
-    ]
-  }
+        mp4Flags: '[movflags=faststart]',
+      },
+    ],
+  },
 };
 
-var nms = new NodeMediaServer(nodeMediaServerConfig);
+const nms = new NodeMediaServer(nodeMediaServerConfig);
 nms.run();
 
 nms.on('getFilePath', (streamPath, oupath, mp4Filename) => {
@@ -88,28 +89,19 @@ nms.on('getFilePath', (streamPath, oupath, mp4Filename) => {
   console.log(streamPath);
   console.log(oupath);
   console.log(mp4Filename);
-  utils.setMp4FilePath(oupath + '/' + mp4Filename);
+  utils.setMp4FilePath(`${oupath}/${mp4Filename}`);
 });
 
 nms.on('preConnect', (id, args) => {
-  console.log(
-    '[NodeEvent on preConnect]',
-    `id=${id} args=${JSON.stringify(args)}`
-  );
+  console.log('[NodeEvent on preConnect]', `id=${id} args=${JSON.stringify(args)}`);
 });
 
 nms.on('postConnect', (id, args) => {
-  console.log(
-    '[NodeEvent on postConnect]',
-    `id=${id} args=${JSON.stringify(args)}`
-  );
+  console.log('[NodeEvent on postConnect]', `id=${id} args=${JSON.stringify(args)}`);
 });
 
 nms.on('doneConnect', (id, args) => {
-  console.log(
-    '[NodeEvent on doneConnect]',
-    `id=${id} args=${JSON.stringify(args)}`
-  );
+  console.log('[NodeEvent on doneConnect]', `id=${id} args=${JSON.stringify(args)}`);
 });
 
 nms.on('prePublish', (id, StreamPath, args) => {

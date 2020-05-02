@@ -4,6 +4,6 @@ module.exports = {
   watch: false,
   // instance_var: 'LIVE_STREAM',
   env_sit: {
-    NODE_ENV: 'sit'
-  }
+    NODE_ENV: 'sit',
+  },
 };
