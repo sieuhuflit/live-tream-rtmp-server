@@ -33,7 +33,7 @@ const RoomSchema = new Schema({
     type: Date,
     default: Utils.getCurrentDateTime(),
   },
-  updatedAt: {
+  beginAt: {
     type: Date,
     default: Utils.getCurrentDateTime(),
   },

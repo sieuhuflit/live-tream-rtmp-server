@@ -1,13 +1,11 @@
 const { NodeMediaServer } = require('node-media-server');
 const express = require('express');
 const mongoose = require('mongoose');
-
 const app = express();
 const http = require('http');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const path = require('path');
-const config = require('config');
 const utils = require('./app/utils');
 
 const shopmodelsPath = `${__dirname}/app/models/`;
@@ -25,17 +23,14 @@ require('./app/controllers/socketIO')(io);
 mongoose.Promise = global.Promise;
 global.appRoot = path.resolve(__dirname);
 
-mongoose.connect(
-  'mongodb://127.0.0.1:27017/livestream?authSource=admin',
-  { useNewUrlParser: true, user: 'admin', pass: '123456' },
-  (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log('Connected to the database: ', config.get('DB_STRING'));
-    }
+mongoose.connect('mongodb://localhost:27017/livestream', (err) => {
+  if (err) {
+    console.log('....................... ERROR CONNECT TO DATABASE');
+    console.log(err);
+  } else {
+    console.log('....................... CONNECTED TO DATABASE');
   }
-);
+});
 
 app.use(
   bodyParser.urlencoded({
@@ -51,7 +46,7 @@ server.listen(3333, (err) => {
   if (err) {
     console.log(err);
   } else {
-    console.log(`listening on port ${config.get('API.PORT')}`);
+    console.log(`listening on port 3333`);
   }
 });
 
