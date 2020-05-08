@@ -1,102 +1,137 @@
-# live-tream-rmtp-server
+# 📺 Live stream RTMP server
 
-Live stream using RTMP for React Native App Live Stream
+### Live stream using RTMP for React Native App Live Stream
 
-Client : https://github.com/sieuhuflit/react-native-live-stream-rtmp-example
+Client: https://github.com/sieuhuflit/react-native-live-stream-rtmp-example
 
-## Demo
+## Demo v2
 
-| Streamer                                                                                                             | Viewer                                                                                                             |
-| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| <img src="https://raw.githubusercontent.com/sieuhuflit/react-native-live-stream-rtmp-example/master/streamer.gif" /> | <img src="https://raw.githubusercontent.com/sieuhuflit/react-native-live-stream-rtmp-example/master/viewer.gif" /> |
+**Note: Here is demo for version 2.0**
+
+<img src="demo/1.png" width="260" title="hover text">
+
+## Demo v1
+
+**Note: Here is demo for version 1.0**
+
+| Streamer                                                                                                                  | Viewer                                                                                                                  |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| <img src="https://raw.githubusercontent.com/sieuhuflit/react-native-live-stream-rtmp-example/master/demo/streamer.gif" /> | <img src="https://raw.githubusercontent.com/sieuhuflit/react-native-live-stream-rtmp-example/master/demo/viewer.gif" /> |
+
+## Feature
+
+- ✅ Live Stream with input username account
+- ✅ The video can replay
+- ✅ Live update status when `Pending`, `On Live`, and `Finish` live streaming process
+- ✅ Streamer and viewer can chat and send heart when livestream
 
 ## Teachnology using
 
-Using node-media-server. Client using Node media client
+- Using node-media-server
 
-## Install
+## Prerequisite
 
-```js
-npm install
-```
+- Install NodeJS (https://nodejs.org)
+- Install ffmpeg (https://www.ffmpeg.org/download.html). If you are using MacOS just type _brew install ffmpeg_
+- MongoDB (https://www.mongodb.com/)
 
-You must install ffmpeg to using 
-
-```js
-brew install ffmpeg
-```
-
-## Config port and Database
-
-- Edit in config/sit.json file
-
-```json
-{
-  "API": {
-    "PORT": 3333,
-    "NAME": "localhost"
-  },
-  "DB_STRING": "mongodb://127.0.0.1:27017/livestream?authSource=admin"
-}
-```
+Then start MongoDB. Then type the following to terminal
 
 ```
-mongo
-use admin
-db.createUser({user:"admin",pwd:"123456",roles:[{role:"userAdminAnyDatabase",db:"admin"}]})
+# mongo
 ```
 
-## Edit MongoDB Authentication
+Then switch to admin database
 
-- Edit in config/sit.json file and edit the YOUR_PASSWORD field
-
-```javascript
-...
-mongoose.connect(
-  config.get('DB_STRING'),
-  { useNewUrlParser: true, user: 'admin', pass: 'YOUR_PASSWORD' },
-  ...
-);
-...
+```
+> use admin
 ```
 
-## Running project
+Then create user admin
 
-- Open terminal and type
-
-```bash
-pm2 start pm2.config.js --env sit
+```
+db.createUser({
+  user: 'admin',
+  pwd: '123456',
+  roles: [
+    { role: 'userAdminAnyDatabase', db: 'admin' },
+    { role: 'dbAdminAnyDatabase', db: 'admin' },
+    { role: 'readWriteAnyDatabase', db: 'admin' }
+  ]
+})
 ```
 
-## Custom way to get mp4 file path
+## Get Start
 
-Add these line to node_modules/node_media_server/node_trans_session.js
+```
+yarn install
+node server.js
+```
 
-Import this on top 
+## Want to Replay video
+
+`Concept`: After live stream finish, the mp4 file will generate and save to folder `media/*` folder.
+We need to do this step to get exact mp4 path information and save it to MongoDB.
+
+Open this file `node_modules/node_media_server/node_trans_session.js`. Then import this to the top
+
 ```js
 const context = require('./node_core_ctx');
 ```
 
-Then add
+Then add this
 
 ```js
-context.nodeEvent.emit(
-  'getFilePath',
-  this.conf.streamPath,
-  ouPath,
-  mp4FileName
-);
+context.nodeEvent.emit('getFilePath', this.conf.streamPath, ouPath, mp4FileName);
 ```
 
 Under this line
 
 ```js
-Logger.log(
-  "[Transmuxing MP4] " +
-    this.conf.streamPath +
-    " to " +
-    ouPath +
-    "/" +
-    mp4FileName
-);
+Logger.log('[Transmuxing MP4] ' + this.conf.streamPath + ' to ' + ouPath + '/' + mp4FileName);
 ```
+
+The result look similar like this
+
+```js
+
+// ...
+// ===> ADD THIS LINE
+const context = require("./node_core_ctx");
+// ...
+
+class NodeTransSession extends EventEmitter {
+  constructor(conf) {
+    super();
+    this.conf = conf;
+  }
+
+  run() {
+    // ...
+    // Rest of stuff
+    // ...
+    if (this.conf.mp4) {
+      this.conf.mp4Flags = this.conf.mp4Flags ? this.conf.mp4Flags : '';
+      let now = new Date();
+      let mp4FileName = dateFormat('yyyy-mm-dd-HH-MM') + '.mp4';
+      let mapMp4 = `${this.conf.mp4Flags}${ouPath}/${mp4FileName}|`;
+      mapStr += mapMp4;
+      Logger.log('[Transmuxing MP4] ' + this.conf.streamPath + ' to ' + ouPath + '/' + mp4FileName);
+
+      // ===> ADD THIS LINE
+      context.nodeEvent.emit("getFilePath", this.conf.streamPath, ouPath, mp4FileName);
+    }
+
+    //...
+  }
+```
+
+## Common Problem
+
+`1/ I can't replay the video ?`
+
+Sometimes the video can't replay, you need to wait a little bit wait the saving mp4 file process finish, then you can replay the video.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

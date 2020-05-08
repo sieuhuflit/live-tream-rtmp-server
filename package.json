@@ -2,7 +2,7 @@
   "name": "rtmp-server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,8 +15,14 @@
     "express": "^4.16.3",
     "moment-timezone": "^0.5.21",
     "mongoose": "^5.2.7",
-    "node-media-server": "1.4.3",
+    "node-media-server": "^1.4.3",
     "rtmp-server": "^0.2.0",
     "socket.io": "^2.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-plugin-import": "^2.20.2",
+    "prettier": "^2.0.5"
   }
 }

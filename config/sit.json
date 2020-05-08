@@ -1,7 +1,0 @@
-{
-  "API": {
-    "PORT": 3333,
-    "NAME": "localhost"
-  },
-  "DB_STRING": "mongodb://127.0.0.1:27017/livestream?authSource=admin"
-}

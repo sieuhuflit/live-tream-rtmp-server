@@ -1,11 +1,10 @@
 const moment = require('moment-timezone');
+
 let mp4FilePath = '';
 
-const getMp4FilePath = () => {
-  return mp4FilePath;
-};
+const getMp4FilePath = () => mp4FilePath;
 
-const setMp4FilePath = path => {
+const setMp4FilePath = (path) => {
   mp4FilePath = path;
 };
 
@@ -18,5 +17,5 @@ const getCurrentDateTime = () => {
 module.exports = {
   getMp4FilePath,
   setMp4FilePath,
-  getCurrentDateTime
+  getCurrentDateTime,
 };
