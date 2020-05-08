@@ -24,6 +24,9 @@ module.exports = (io) => {
       });
     });
 
+    /**
+     * Join live stream room
+     */
     socket.on('join-room', (data) => {
       console.log('Join room', data);
       const { userName, roomName } = data;
@@ -31,6 +34,9 @@ module.exports = (io) => {
       socket.join(roomName);
     });
 
+    /**
+     * Leave live stream room
+     */
     socket.on('leave-room', (data) => {
       console.log('Leave room', data);
       const { userName, roomName } = data;
@@ -38,6 +44,9 @@ module.exports = (io) => {
       socket.leave(roomName);
     });
 
+    /**
+     * The host join the room and prepare live stream
+     */
     socket.on('prepare-live-stream', (data) => {
       console.log('Prepare live stream', data);
       const { userName, roomName } = data;

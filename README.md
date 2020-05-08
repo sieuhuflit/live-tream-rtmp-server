@@ -1,116 +1,53 @@
-# live-tream-rmtp-server
+# 📺 Live stream RTMP server
 
-Live stream using RTMP for React Native App Live Stream
+### Live stream using RTMP for React Native App Live Stream
 
-Client : https://github.com/sieuhuflit/react-native-live-stream-rtmp-example
+Client: https://github.com/sieuhuflit/react-native-live-stream-rtmp-example
 
-## Demo
+## Demo v2
+
+**Note: Here is demo for version 2.0**
+
+<img src="demo/1.png" width="260" title="hover text">
+
+## Demo v1
+
+**Note: Here is demo for version 1.0**
 
 | Streamer                                                                                                             | Viewer                                                                                                             |
 | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | <img src="https://raw.githubusercontent.com/sieuhuflit/react-native-live-stream-rtmp-example/master/streamer.gif" /> | <img src="https://raw.githubusercontent.com/sieuhuflit/react-native-live-stream-rtmp-example/master/viewer.gif" /> |
 
+## Feature
+
+- ✅ Live Stream with input username account
+- ✅ The video can replay
+- ✅ Live update status when `Pending`, `On Live`, and `Finish` live streaming process
+- ✅ Streamer and viewer can chat and send heart when livestream
+
 ## Teachnology using
 
-Using node-media-server. Client using Node media client
+- Using node-media-server
 
-## Install
+## Prerequisite
 
-```js
-npm install
-```
+- Install NodeJS (https://nodejs.org)
+- Install ffmpeg (https://www.ffmpeg.org/download.html). If you are using MacOS just type _brew install ffmpeg_
+- MongoDB (https://www.mongodb.com/)
 
-You must install ffmpeg to using
-
-```js
-brew install ffmpeg
-```
+Then start MongoDB. Then type the following to terminal
 
 ```
-mongo
-use admin
-db.createUser({user:"admin",pwd:"123456",roles:[{role:"userAdminAnyDatabase",db:"admin"}]})
+# mongo
 ```
 
-## Edit MongoDB Authentication
-
-- Edit in config/sit.json file and edit the YOUR_PASSWORD field
-
-```javascript
-...
-mongoose.connect(
-  config.get('DB_STRING'),
-  { useNewUrlParser: true, user: 'admin', pass: 'YOUR_PASSWORD' },
-  ...
-);
-...
-```
-
-## Running project
-
-- Open terminal and type
-
-```bash
-pm2 start pm2.config.js --env sit
-```
-
-## Custom way to get mp4 file path
-
-Add these line to node_modules/node_media_server/node_trans_session.js
-
-Import this on top
-
-```js
-const context = require('./node_core_ctx');
-```
-
-Then add
-
-```js
-context.nodeEvent.emit('getFilePath', this.conf.streamPath, ouPath, mp4FileName);
-```
-
-Under this line
-
-```js
-Logger.log('[Transmuxing MP4] ' + this.conf.streamPath + ' to ' + ouPath + '/' + mp4FileName);
-```
-
-## Running Docker
-
-First we need to build docker
+Then switch to admin database
 
 ```
-docker-compose up -d --build
+> use admin
 ```
 
-Then we list out container ID
-
-```
-docker ps
-```
-
-```
-CONTAINER ID        IMAGE                        COMMAND                  CREATED             STATUS              PORTS                                      NAMES
-57281a1e4106        egg-docker-template_nodejs   "docker-entrypoint.s…"   3 hours ago         Up 3 hours          127.0.0.1:7001->7001/tcp                   egg-docker-template_nodejs_1
-596247f36cbe        egg-docker-template_nginx    "/bin/sh -c nginx"       3 hours ago         Up 3 hours          0.0.0.0:80->80/tcp, 0.0.0.0:443->443/tcp   egg-docker-template_nginx_1
-9bcac416cd63        egg-docker-template_mongo    "docker-entrypoint.s…"   3 hours ago         Up 3 hours          127.0.0.1:27017->27017/tcp                 egg-docker-template_mongo_1
-```
-
-We need mongodb's container name or id , and use `exec` to enter using mongo container id
-
-```
-docker exec -it 12ac46c96b4d /bin/sh
-```
-
-now you enter container's shell, just only enter `mongo` to open mongodb, and create account.
-switch to admin database
-
-```
-use admin
-```
-
-create admin user
+Then create user admin
 
 ```
 db.createUser({
@@ -124,21 +61,77 @@ db.createUser({
 })
 ```
 
-```bash
-docker-compose up
-```
-
-If you are using MacOS, run these syntax
+## Get Start
 
 ```
-ex -s -c '7i|const context = require("./node_core_ctx");' -c x node_modules/node-media-server/node_trans_session.js
-ex -s -c '33i|context.nodeEvent.emit("getFilePath", this.conf.streamPath, ouPath, mp4FileName);' -c x  node_modules/node-media-server/node_trans_session.js
+yarn install
+node server.js
 ```
 
-Then we connect to container then type this
+## Want to Replay video
 
-```
-sed -i '7 i\const context = require("./node_core_ctx");' node_modules/node-media-server/node_trans_session.js
-sed -i '33 i\context.nodeEvent.emit("getFilePath", this.conf.streamPath, ouPath, mp4FileName);' node_modules/node-media-server/node_trans_session.js
+`Concept`: After live stream finish, the mp4 file will generate and save to folder `media/*` folder.
+We need to do this step to get exact mp4 path information and save it to MongoDB.
+
+Open this file `node_modules/node_media_server/node_trans_session.js`. Then import this to the top
+
+```js
+const context = require('./node_core_ctx');
 ```
 
+Then add this
+
+```js
+context.nodeEvent.emit('getFilePath', this.conf.streamPath, ouPath, mp4FileName);
+```
+
+Under this line
+
+```js
+Logger.log('[Transmuxing MP4] ' + this.conf.streamPath + ' to ' + ouPath + '/' + mp4FileName);
+```
+
+The result look similar like this
+
+```js
+
+// ...
+// ===> ADD THIS LINE
+const context = require("./node_core_ctx");
+// ...
+
+class NodeTransSession extends EventEmitter {
+  constructor(conf) {
+    super();
+    this.conf = conf;
+  }
+
+  run() {
+    // ...
+    // Rest of stuff
+    // ...
+    if (this.conf.mp4) {
+      this.conf.mp4Flags = this.conf.mp4Flags ? this.conf.mp4Flags : '';
+      let now = new Date();
+      let mp4FileName = dateFormat('yyyy-mm-dd-HH-MM') + '.mp4';
+      let mapMp4 = `${this.conf.mp4Flags}${ouPath}/${mp4FileName}|`;
+      mapStr += mapMp4;
+      Logger.log('[Transmuxing MP4] ' + this.conf.streamPath + ' to ' + ouPath + '/' + mp4FileName);
+
+      // ===> ADD THIS LINE
+      context.nodeEvent.emit("getFilePath", this.conf.streamPath, ouPath, mp4FileName);
+    }
+
+    //...
+  }
+```
+
+## Common Problem
+
+`1/ I can't replay the video ?`
+
+Sometimes the video can't replay, you need to wait a little bit wait the saving mp4 file process finish, then you can replay the video.
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
