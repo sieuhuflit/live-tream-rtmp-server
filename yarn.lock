@@ -316,12 +316,12 @@ concat-map@0.0.1:
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
-config@^2.0.1:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/config/-/config-2.0.2.tgz#b81c8f4e05203e1da7752864c19a11604ca923d7"
-  integrity sha512-duIbkKb0gls0bOtGwd1vaD4236MwepQlZcrMheOGrn3/9Px7oYFh8G4LB3ylGOlPr5wGoJRm8Grb2RihJZxuHQ==
+config@^3.3.8:
+  version "3.3.8"
+  resolved "https://registry.yarnpkg.com/config/-/config-3.3.8.tgz#14ef7aef22af25877fdaee696ec64d761feb7be0"
+  integrity sha512-rFzF6VESOdp7wAXFlB9IOZI4ouL05g3A03v2eRcTHj2JBQaTNJ40zhAUl5wRbWHqLZ+uqp/7OE0BWWtAVgrong==
   dependencies:
-    json5 "^1.0.1"
+    json5 "^2.2.1"
 
 confusing-browser-globals@^1.0.9:
   version "1.0.9"
@@ -1097,12 +1097,10 @@ json-stable-stringify-without-jsonify@^1.0.1:
   resolved "https://registry.yarnpkg.com/json-stable-stringify-without-jsonify/-/json-stable-stringify-without-jsonify-1.0.1.tgz#9db7b59496ad3f3cfef30a75142d2d930ad72651"
   integrity sha1-nbe1lJatPzz+8wp1FC0tkwrXJlE=
 
-json5@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/json5/-/json5-1.0.1.tgz#779fb0018604fa854eacbf6252180d83543e3dbe"
-  integrity sha512-aKS4WQjPenRxiQsC93MNfjx+nbF4PAdYzmd/1JIj8HYzqfbu86beTuNgXDzPknWk0n0uARlyewZo4s++ES36Ow==
-  dependencies:
-    minimist "^1.2.0"
+json5@^2.2.1:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
+  integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
 
 kareem@2.3.1:
   version "2.3.1"
@@ -1189,7 +1187,7 @@ minimatch@^3.0.4:
   dependencies:
     brace-expansion "^1.1.7"
 
-minimist@^1.2.0, minimist@^1.2.5:
+minimist@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
